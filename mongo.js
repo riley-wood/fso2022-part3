@@ -26,7 +26,7 @@ if (process.argv.length === 2) {
 }
 else {
     person.save().then(result => {
-    console.log(`Added ${name} with number ${number} to the database.`)
-    mongoose.connection.close()
+        console.log(`Added ${name} with number ${number} to the database.`)
+        mongoose.connection.close()
     })
 }

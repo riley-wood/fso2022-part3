@@ -23,7 +23,7 @@ app.use(morgan('tiny', {
 }))
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person', {
-    skip: function (request, response) { 
+    skip: function (request, response) {
         return request.method !== 'POST'
     }
 }))
@@ -48,7 +48,7 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/info', (request, response) => {
     const currentTime = new Date()
-    const responseContent = 
+    const responseContent =
     `Phonebook has info for ${data.length} people.<br />
     ${currentTime}`
 
@@ -78,17 +78,12 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const data = request.body
-
-    const person = {
-        name: data.name,
-        number: data.number
-    }
+    const { name, number } = request.body
 
     Person.findByIdAndUpdate(
         request.params.id,
-        { person, important },
-        {new: true, runValidators: true, context: 'query'})
+        { name, number },
+        { new: true, runValidators: true, context: 'query' })
         .then(updatedPerson => {
             response.json(updatedPerson.toJSON())
         })
@@ -112,14 +107,14 @@ app.post('/api/persons', (request, response, next) => {
         console.log(`${entry.name} was added to the database.`)
         response.json(savedPerson.toJSON())
     })
-    .catch(error => next(error))
+        .catch(error => next(error))
 })
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
 
     if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id'})
+        return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message })
     }
